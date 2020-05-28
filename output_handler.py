@@ -6,20 +6,13 @@ class OutputHandler:
         self.data = {}
 
 
-    def update_data(self):
-        for subprocess in self.config:
-            self.read_file(subprocess)
-
-
-    def read_file(self, subprocess):
+    def update_file(self, subprocess, data):
         filepath = self.config[subprocess]["filepath"]
-        # Read data in file
-        file = open(filepath, "r")
-        data = file.read()
+        file = open(filepath, "w+")
+        file.write(data)
         file.close()
-        # Clear any data that's in there
-        file = open(filepath, "w")
-        file.write("")
-        file.close()
-        self.data[subprocess] = data
 
+
+    def set_data(self, subprocess, data):
+        self.data[subprocess] = data
+        self.update_file(subprocess, data)

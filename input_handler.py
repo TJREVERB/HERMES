@@ -1,4 +1,4 @@
-# Handler for giving input to drivers
+# Handler for getting input from drivers
 class InputHandler:
 
     def __init__(self, config):
@@ -6,13 +6,20 @@ class InputHandler:
         self.data = {}
 
 
-    def update_file(self, subprocess, data):
+    def update_data(self):
+        for subprocess in self.config:
+            self.read_file(subprocess)
+
+
+    def read_file(self, subprocess):
         filepath = self.config[subprocess]["filepath"]
-        file = open(filepath, "w+")
-        file.write(data)
+        # Read data in file
+        file = open(filepath, "r")
+        data = file.read()
         file.close()
-
-
-    def set_data(self, subprocess, data):
+        # Clear any data that's in there
+        file = open(filepath, "w")
+        file.write("")
+        file.close()
         self.data[subprocess] = data
-        self.update_file(subprocess, data)
+

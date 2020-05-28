@@ -4,4 +4,6 @@ class ControlHandler:
         self.config = config
 
 
-    
+    def run(self):
+        pass
+
