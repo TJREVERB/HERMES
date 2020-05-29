@@ -10,6 +10,6 @@ class ControlHandler:
 
 
     def run(self):
-        print(self.submodules[0].pdm_states)
+        print(self.submodules[0].measure_pdms())
         for submodule in self.submodules:
             submodule.run()

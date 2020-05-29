@@ -29,7 +29,7 @@ def main():
     config = json.load(open("config.json"))
     controller = ControlHandler(config)
     while True:
-        time.sleep(0.05)
+        time.sleep(0.1)
         controller.run()
 
 
