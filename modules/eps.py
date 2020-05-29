@@ -37,16 +37,18 @@ class EPS:
 
     def run(self):
         # Add some sort of control loop? (What does the EPS do when its just being left)
-            # Implement watchdog
+        # Implement watchdog
         commands = read_file(self.command_filename)
         performed_command = False
         for register in commands:
             if commands[register] == -1: continue
             self.ingest(register, commands[register])
             performed_command = True
-        if performed_command:
+        if read_file(self.command_filename) != self.empty_commands:
+            print(read_file(self.command_filename), self.empty_commands)
             write_file(self.command_filename, self.empty_commands)
-        write_file(self.state_filename, self.state)
+        if read_file(self.state_filename) != self.state:
+            write_file(self.state_filename, self.state)
 
 
     def get_pin_num(self, command):

@@ -1,5 +1,6 @@
 import sys
 import json
+import time
 from enum import Enum
 from control import ControlHandler
 
@@ -28,6 +29,7 @@ def main():
     config = json.load(open("config.json"))
     controller = ControlHandler(config)
     while True:
+        time.sleep(0.05)
         controller.run()
 
 
