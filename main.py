@@ -1,5 +1,7 @@
 import sys
+import json
 from enum import Enum
+from control import ControlHandler
 
 
 class SimulationModes(Enum):
@@ -22,11 +24,11 @@ class SimulationModes(Enum):
     LOWPOWER_SAFE = "LOWPOWER_SAFE"
 
 
-while True:
-    input_handler.update_data()
-    output = controller.run(input_handler.data)
-    for subprocess in output:
-        output_handler.set_data(subprocess, output[subprocess])
+def main():
+    config = json.load(open("config.json"))
+    controller = ControlHandler(config)
+    while True:
+        controller.run()
 
 
 if __name__ == '__main__':
