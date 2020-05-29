@@ -1,4 +1,6 @@
 # Handler for giving output to drivers
+import json
+
 class OutputHandler:
 
     def __init__(self, config):
