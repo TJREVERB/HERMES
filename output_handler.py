@@ -7,7 +7,7 @@ class OutputHandler:
 
 
     def update_file(self, subprocess, data):
-        filepath = self.config[subprocess]["filepath"]
+        filepath = self.config[subprocess]["output_filepath"]
         file = open(filepath, "w+")
         file.write(data)
         file.close()

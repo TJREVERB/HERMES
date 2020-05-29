@@ -35,8 +35,7 @@ class EPS:
         raise NotImplementedError
 
 
-    def ingest(self, address, register, command):
-        assert(address == self.address)
+    def ingest(self, register, command):
         # TODO: Make this stuff run in a thread so that we can add a delay
         if register == EPSRegister.SWITCH_PDM_N_ON:
             pin_num = self.get_pin_num(command)
