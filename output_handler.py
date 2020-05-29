@@ -4,6 +4,9 @@ class OutputHandler:
     def __init__(self, config):
         self.config = config
         self.data = {}
+        for subprocess in self.config:
+            filepath = self.config[subprocess]["output_filepath"]
+            open(filepath, "w+").close()
 
 
     def update_file(self, subprocess, data):

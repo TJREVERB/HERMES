@@ -10,13 +10,16 @@ class ControlHandler:
 
 
     def run(self, data):
-        for submodule in self.submodules:
-            if data[submodule]:
-                submodule.ingest(*data[submodule])
+        print(self.submodules["EPS"].pdm_states)
+        for key in self.submodules:
+            submodule = self.submodules[key]
+            submodule.ingest(data[key])
 
         output = {}
-        for submodule in self.submodules:
+        for key in self.submodules:
+            submodule = self.submodules[key]
             if submodule.return_data:
-                output[submodule] = submodule.return_data
+                output[key] = submodule.return_data
             else:
-                output[submodule] = ""
+                output[key] = ""
+        return output

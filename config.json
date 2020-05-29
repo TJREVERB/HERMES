@@ -1,7 +1,7 @@
 {
    "EPS": {
-        "input_filename": "",
-        "output_filename": "",
+        "input_filepath": "i2c-1-input.txt",
+        "output_filepath": "i2c-1-output.txt",
         "address": 4
     }
 }

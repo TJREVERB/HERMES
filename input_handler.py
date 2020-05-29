@@ -4,6 +4,9 @@ class InputHandler:
     def __init__(self, config):
         self.config = config
         self.data = {}
+        for subprocess in self.config:
+            filepath = self.config[subprocess]["input_filepath"]
+            open(filepath, "w+").close()
 
 
     def update_data(self):
@@ -21,5 +24,4 @@ class InputHandler:
         file = open(filepath, "w")
         file.write("")
         file.close()
-        self.data[subprocess] = data.split(" ")
-
+        self.data[subprocess] = data

@@ -10,7 +10,9 @@ output_handler = OutputHandler(config)
 controller = ControlHandler(config)
 
 
+import time
 while True:
+    time.sleep(0.1)
     input_handler.update_data()
     output = controller.run(input_handler.data)
     for subprocess in output:
