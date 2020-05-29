@@ -12,7 +12,7 @@ class InputHandler:
 
 
     def read_file(self, subprocess):
-        filepath = self.config[subprocess]["filepath"]
+        filepath = self.config[subprocess]["input_filepath"]
         # Read data in file
         file = open(filepath, "r")
         data = file.read()
@@ -21,5 +21,5 @@ class InputHandler:
         file = open(filepath, "w")
         file.write("")
         file.close()
-        self.data[subprocess] = data
+        self.data[subprocess] = data.split(" ")
 
