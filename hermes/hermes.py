@@ -1,4 +1,4 @@
-from modules.eps import EPS
+from hermes.modules.eps import EPS
 from threading import Thread
 
 class Hermes:
