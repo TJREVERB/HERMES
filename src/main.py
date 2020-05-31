@@ -9,6 +9,7 @@ from threading import Thread
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 # Add MCL to path so that we can import it
 sys.path.append(os.path.abspath(os.path.join('../..', 'pfs')))
+print(os.getcwd())
 
 try:
     from MainControlLoop.main_control_loop import MainControlLoop as MCL
@@ -27,9 +28,21 @@ def mcl_thread(mcl):
         mcl.execute()
 
 
-def ingest(inp):
-    print(inp)
-
+def ingest(hermes, mcl, inp, print):
+    inp = inp.split()
+    header, cmd = inp[0], inp[1:]
+    if header == 'print':
+        submodule = cmd[0]
+        if submodule not in hermes.submodules:
+            print("Submodule not found: {}".format(submodule))
+            return
+        dct = hermes.submodules[submodule].__dict__
+        for key in cmd[1:]:
+            dct = dct[key]
+        print(dct)
+    else:
+        print("Unknown header: {}".format(header))
+    
 
 def run_tests():
     print('running tests')
@@ -37,6 +50,7 @@ def run_tests():
 
 def main():
     open("blackbox.txt", "w+")
+    actual_print = print
     __builtins__.__dict__['print'] = log
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--config", help="HERMES configuration file", )
@@ -55,7 +69,7 @@ def main():
     if sys.flags.interactive:
         while True:
             inp = input()
-            ingest(inp)
+            ingest(hermes, mcl, inp, actual_print)
     else:
         run_tests()
 

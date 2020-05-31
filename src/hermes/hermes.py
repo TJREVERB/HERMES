@@ -1,13 +1,13 @@
 import sys
 import time
+from .modules.eps import EPS
 from threading import Thread
-from hermes.modules.eps import EPS
 
 class Hermes:
 
     def __init__(self, config):
         self.config = config
-        self.submodules = []
+        self.submodules = {}
         self.registry = {
             "EPS_ON": True,
             "PI_ON": True,
@@ -15,7 +15,6 @@ class Hermes:
             "ANTENNA_DEPLOYER_ON": True,
             "IRIDIUM_ON": True
         }
-        self.running = []
         if "EPS" in self.config:
             self.submodules["EPS"] = EPS(self.config, self.registry)
 
@@ -57,8 +56,8 @@ class Hermes:
 
 
     def run(self):
-        for submodule in self.submodules:
+        for name in self.submodules:
+            submodule = self.submodules[name]
             sub_thread = Thread(target=submodule.run)
             sub_thread.daemon = True
             sub_thread.start()
-            self.running.append(submodule)
