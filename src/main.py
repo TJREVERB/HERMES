@@ -2,16 +2,17 @@ import os
 import sys
 import json
 import argparse
-from hermes import Hermes
+from .hermes import Hermes
 from threading import Thread
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 # Add MCL to path so that we can import it
-sys.path.append(os.path.abspath(os.path.join('../..', 'pfs')))
+# sys.path.append(os.path.abspath(os.path.join('../..', 'pfs')))
+print(os.getcwd())
 
 try:
-    from MainControlLoop import main_control_loop as mcl
+    from .MainControlLoop import main_control_loop as mcl
 except ImportError:
     raise RuntimeError("Unable to import pFS Main Control Loop, are you in the pFS directory?")
 
