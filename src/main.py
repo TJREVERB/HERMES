@@ -1,16 +1,19 @@
-import sys
+import sys, os
+# Add MCL to path so that we can import it
+sys.path.append(os.path.abspath(os.path.join('../..', 'pfs')))
+
 import json
 import time
 import argparse
-from hermes import Hermes
 from threading import Thread
 
+from hermes import Hermes
+from MainControlLoop.main_control_loop import MainControlLoop
 
-def hermes_thread(hermes):
+
+def mcl_thread(mcl):
     while True:
-        time.sleep(0.1)
-        hermes.run()
-
+        mcl.execute()
 
 
 def ingest(inp):
@@ -23,7 +26,9 @@ def main():
 #    args = parser.parse_args()
     config = json.load(open("config.json"))
     hermes = Hermes(config)
-    thread = Thread(target=hermes_thread, args=(hermes,))
+    hermes.run()
+    mcl = MainControlLoop()
+    thread = Thread(target=mcl_thread, args=(mcl,))
     thread.daemon = True
     thread.start()
 
