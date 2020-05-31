@@ -1,4 +1,5 @@
 #https://drive.google.com/drive/u/0/folders/1RtOsvaIf1FDO5OYh6ZsVETSZuCb2_O6_ page 39
+import time
 from enum import Enum
 from .helpers import read_file, write_file
 
@@ -84,18 +85,20 @@ class EPS:
 
 
     def run(self):
-        # Add some sort of control loop? (What does the EPS do when its just being left)
-        # Implement watchdog
-        commands = read_file(self.command_filename)
-        performed_command = False
-        for register in commands:
-            self.ingest(register, commands[register])
-            performed_command = True
-        if read_file(self.command_filename) != self.empty_commands:
-            write_file(self.command_filename, self.empty_commands)
-        self.state_dict = {-1: self.state}
-        if read_file(self.state_filename) != self.state_dict:
-            write_file(self.state_filename, self.state_dict)
+        while True:
+            time.sleep(0.1) # Temporary for testing, should remove this in final version
+            print(self.measure_pdms())
+            # Implement watchdog
+            commands = read_file(self.command_filename)
+            performed_command = False
+            for register in commands:
+                self.ingest(register, commands[register])
+                performed_command = True
+            if read_file(self.command_filename) != self.empty_commands:
+                write_file(self.command_filename, self.empty_commands)
+            self.state_dict = {-1: self.state}
+            if read_file(self.state_filename) != self.state_dict:
+                write_file(self.state_filename, self.state_dict)
 
 
     def get_pin_num(self, command):

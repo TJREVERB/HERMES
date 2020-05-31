@@ -11,6 +11,8 @@ class Hermes:
 
 
     def run(self):
-        print(self.submodules[0].measure_pdms())
         for submodule in self.submodules:
+            sub_thread = Thread(target=submodule.run)
+            sub_thread.daemon = True
+            sub_thread.start()
             submodule.run()
