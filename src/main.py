@@ -1,37 +1,31 @@
+import os
 import sys
 import json
-import time
 import argparse
+
 from hermes import Hermes
-from threading import Thread
 
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-def hermes_thread(hermes):
-    while True:
-        time.sleep(0.1)
-        hermes.run()
+try:
+    from MainControlLoop import main_control_loop as mcl
+except ImportError:
+    raise RuntimeError("Unable to import pFS Main Control Loop, are you in the pFS directory?")
 
-
-
-def ingest(inp):
-    print(inp)
 
 
 def main():
-#    parser = argparse.ArgumentParser(description="Pass some arguments")
-#    parser.add_argument('--live', dest='live', const=True, default=False, nargs='*')
-#    args = parser.parse_args()
-    config = json.load(open("config.json"))
-    hermes = Hermes(config)
-    thread = Thread(target=hermes_thread, args=(hermes,))
-    thread.daemon = True
-    thread.start()
 
-    while True:
-        if True:
-#        if args.live:
-            inp = input()
-            ingest(inp)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--config", help="HERMES configuration file",)
+    args = parser.parse_args()
+
+    with open(args.config, 'r') as f:
+        config = json.load(f)
+
+
+
+
 
 
 if __name__ == '__main__':
