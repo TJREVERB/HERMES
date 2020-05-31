@@ -1,6 +1,7 @@
 from modules.eps import EPS
+from threading import Thread
 
-class ControlHandler:
+class Hermes:
 
     def __init__(self, config):
         self.config = config
