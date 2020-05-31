@@ -12,9 +12,15 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 print(os.getcwd())
 
 try:
-    from .MainControlLoop import main_control_loop as mcl
+    from MainControlLoop.main_control_loop import MainControlLoop as MCL
 except ImportError:
     raise RuntimeError("Unable to import pFS Main Control Loop, are you in the pFS directory?")
+
+
+def log(*args):
+    file = open("blackbox.txt", "a+")
+    file.write(' '.join([str(i) for i in args]) + "\n")
+    file.close()
 
 
 def mcl_thread(mcl):
@@ -31,6 +37,8 @@ def run_tests():
 
 
 def main():
+    open("blackbox.txt", "w+")
+    __builtins__.__dict__['print'] = log
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--config", help="HERMES configuration file", )
     args = parser.parse_args()
@@ -40,7 +48,7 @@ def main():
 
     hermes = Hermes(config)
     hermes.run()
-    mcl = MainControlLoop()
+    mcl = MCL()
     thread = Thread(target=mcl_thread, args=(mcl,))
     thread.daemon = True
     thread.start()
