@@ -15,4 +15,3 @@ class Hermes:
             sub_thread = Thread(target=submodule.run)
             sub_thread.daemon = True
             sub_thread.start()
-            submodule.run()
