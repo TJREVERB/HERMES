@@ -70,8 +70,8 @@ class EPS:
         # 0 is off, 1 is on
         self.expected_pdm_states = self.initial_pdm_states.copy()
         self.timer_values = [0 for i in range(10)]
-        self.watchdog_period = 0.5
-
+        self.watchdog_period = self.initial_watchdog
+ 
         # Create files
 #        self.state = {register.value: 0 for register in EPSRegister}
         self.state = 0x00
@@ -120,6 +120,10 @@ class EPS:
         return self.expected_pdm_states
 
 
+    def brownout(self):
+        raise NotImplementedError
+
+
     def get_board_status(self):
         raise NotImplementedError
 
@@ -162,6 +166,7 @@ class EPS:
     def ingest(self, register, command):
         # NOTE: I2C should convert byte arrays to ints and vice versa, simulator will always deal w/ ints
         # TODO: Add WR delays (prolly need to use threads for this)
+        # TODO: Fix return bytes
         print(register, command)
         if register not in self.data_registers and command > 255:
             # TODO: EPS sometimes acts weirdly here, gotta figure out what it's actually doing
