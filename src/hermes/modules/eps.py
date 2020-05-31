@@ -49,20 +49,22 @@ class EPSRegister(Enum):
 
 class EPS:
 
-    def __init__(self, config):
+    def __init__(self, config, registry):
         # TODO: Use the actual initial states
         self.config = config["EPS"]
+        self.registry = registry
         self.address = self.config["address"]
         self.state_filename = self.config["state_filename"]
         self.command_filename = self.config["command_filename"]
         self.initial_pdm_states = [0 for i in range(10)] # everything is off
-        self.initial_watchdog = 4
+        self.initial_watchdog_period = 4
         self.board_version = 1234
         self.board_checksum = 4321
         self.board_firmware_revision = 2345
         self.timer_limits = [30 for i in range(10)]
         self.data_registers = [0x10, 0x21, 0x50, 0x51, 0x52, 0x53, 0x54, 0x60, 0x61, 0x62, 0x70]
 
+        self.terminated = False
         self.reset()
 
 
@@ -71,8 +73,9 @@ class EPS:
         # 0 is off, 1 is on
         self.expected_pdm_states = self.initial_pdm_states.copy()
         self.timer_values = [0 for i in range(10)]
-        self.watchdog_period = self.initial_watchdog
- 
+        self.watchdog_period = self.initial_watchdog_period
+        self.watchdog = time.time()
+
         # Create files
 #        self.state = {register.value: 0 for register in EPSRegister}
         self.state = 0x00
@@ -83,11 +86,25 @@ class EPS:
         write_file(self.command_filename, self.empty_commands)
 
 
+    def hard_reset(self):
+        self.reset()
+
+
+    def terminate(self):
+        self.hard_reset()
+        self.terminated = True
+
 
     def run(self):
         while True:
+            if self.terminated:
+                continue
             time.sleep(0.1) # Temporary for testing, should remove this in final version
             print(self.measure_pdms())
+            if time.time() - self.watchdog_period > self.watchdog:
+                self.registry["EPS_ON"] = False
+                self.registry["PI_ON"] = False
+                self.expected_pdm_states = [0 for i in range(10)]
             # Implement watchdog
             commands = read_file(self.command_filename)
             performed_command = False
