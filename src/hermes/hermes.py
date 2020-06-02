@@ -1,7 +1,9 @@
 import sys
 import time
-from .modules.eps import EPS
 from threading import Thread
+
+from .modules.eps import EPS
+from .data_mode import DataType
 
 
 class Hermes:
@@ -16,8 +18,9 @@ class Hermes:
             "ANTENNA_DEPLOYER_ON": True,
             "IRIDIUM_ON": True
         }
+        starting_data_type = DataType(config['starting_data_type'])
         if "EPS" in self.config:
-            self.submodules["EPS"] = EPS(self.config, self.registry)
+            self.submodules["EPS"] = EPS(self.config, self.registry, starting_data_type)
 
     def control(self):
         while True:
@@ -35,21 +38,26 @@ class Hermes:
 
     def turn_off(self, submodule):
         if submodule not in self.submodules:
-            print("Submodule {} not found!".format(submodule))
+            print(f"Submodule {submodule} not found!")
         self.submodules[submodule].terminated = True
 
     def turn_on(self, submodule):
         if submodule not in self.submodules:
-            print("Submodule {} not found!".format(submodule))
+            print(f"Submodule {submodule} not found!")
         self.submodules[submodule].terminated = False
 
     def reset(self, submodule):
         if submodule not in self.submodules:
-            print("Submodule {} not found!".format(submodule))
+            print(f"Submodule {submodule} not found!")
+
         self.submodules[submodule].terminated = True
         time.sleep(self.config[submodule]["reset_time"])
         self.submodules[submodule].terminated = False
         self.submodules[submodule].reset()
+
+    def shift_mode(self, mode: DataType):
+        for submodule in self.submodules:
+            self.submodules[submodule].shift_mode(mode)
 
     def run(self):
         for name in self.submodules:

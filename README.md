@@ -26,7 +26,6 @@ Example: `python hermes.py --config config.json -t runfile.hermes`
 
     # Example runfile.hermes
     runtime: 5  # in seconds
-    steady_state: normal  # what kind of data is expected
     modules:  # what modules to activate during the test period
         - APRS
         - Antenna_Deployer

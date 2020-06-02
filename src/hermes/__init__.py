@@ -1,1 +1,1 @@
-from .hermes import Hermes
+from .hermes import Hermes, DataType

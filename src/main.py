@@ -6,7 +6,7 @@ import time
 import argparse
 from threading import Thread
 
-from hermes import Hermes
+from hermes import Hermes, DataType
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -116,7 +116,8 @@ def main():
     args = parser.parse_args()
 
     with open(args.config, 'r') as config_file:
-        config = json.load(config_file)
+        config = yaml.load(config_file)
+
     hermes = Hermes(config)
     hermes.run()
 
