@@ -47,13 +47,13 @@ Do not use the `-t` or `--testfile` flags when running `main.py`.
 
 ## All actions
 | Action name   |      Module      |  What it does |
-|----------|:-------------:|------:|
+|:----------:|:-------------:|:------:|
 | brownout | EPS | Simulates a brownout event where the battery voltage drops significantly |
 
 
 ## Command Structure
 | Headers   |      Args      |  What it does |
-|----------|:-------------:|------:|
+|:----------:|:-------------:|:------:|
 | print | module | Prints all the stuff in the module |
 | sfr | state field name | Prints the value of the state field in the SFR |
 | flag | error flag name | Prints the status of the error flag in the SFR | 
