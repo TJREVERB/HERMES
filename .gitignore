@@ -2,6 +2,7 @@
 
 *.i2c
 *.serial
+*.hermes
 blackbox.txt
 
 
