@@ -1,7 +1,0 @@
-{
-   "EPS": {
-        "state_filename": "addr.state.i2c",
-        "command_filename": "addr.command.i2c",
-        "address": 4
-    }
-}
