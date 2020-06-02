@@ -1,7 +1,8 @@
-#https://drive.google.com/drive/u/0/folders/1RtOsvaIf1FDO5OYh6ZsVETSZuCb2_O6_ page 39
+# https://drive.google.com/drive/u/0/folders/1RtOsvaIf1FDO5OYh6ZsVETSZuCb2_O6_ page 39
 import time
 from enum import Enum
 from .helpers import read_file, write_file
+
 
 class InvalidChannelError(Exception):
     pass
@@ -30,7 +31,6 @@ class EPSRegister(Enum):
     GET_PDM_N_ACTUAL_STATE = 0x54
     GET_PDM_N_TIMER_LIMIT = 0x61
     GET_PDM_N_CURRENT_TIMER_VALUE = 0x62
-    
 
     # Set methods
     SET_COMMS_WATCHDOG_PERIOD = 0x21
@@ -56,7 +56,7 @@ class EPS:
         self.address = self.config["address"]
         self.state_filename = self.config["state_filename"]
         self.command_filename = self.config["command_filename"]
-        self.initial_pdm_states = [0 for i in range(10)] # everything is off
+        self.initial_pdm_states = [0 for i in range(10)]  # everything is off
         self.initial_watchdog_period = 4
         self.board_version = 1234
         self.board_checksum = 4321
@@ -67,7 +67,6 @@ class EPS:
         self.terminated = False
         self.reset()
 
-
     def reset(self):
         # Initial states
         # 0 is off, 1 is on
@@ -77,7 +76,7 @@ class EPS:
         self.watchdog = time.time()
 
         # Create files
-#        self.state = {register.value: 0 for register in EPSRegister}
+        #        self.state = {register.value: 0 for register in EPSRegister}
         self.state = 0x00
 
         self.empty_commands = {}
@@ -85,21 +84,18 @@ class EPS:
         write_file(self.state_filename, self.state_dict)
         write_file(self.command_filename, self.empty_commands)
 
-
     def hard_reset(self):
         self.reset()
-
 
     def terminate(self):
         self.hard_reset()
         self.terminated = True
 
-
     def run(self):
         while True:
             if self.terminated:
                 continue
-            time.sleep(0.1) # Temporary for testing, should remove this in final version
+            time.sleep(0.1)  # Temporary for testing, should remove this in final version
             print(self.measure_pdms())
             if time.time() - self.watchdog_period > self.watchdog:
                 self.registry["EPS_ON"] = False
@@ -117,7 +113,6 @@ class EPS:
             if read_file(self.state_filename) != self.state_dict:
                 write_file(self.state_filename, self.state_dict)
 
-
     def get_pin_num(self, command):
         pin = self.get_pin_num(command)
         if not (1 <= command <= 10):
@@ -126,39 +121,31 @@ class EPS:
             return -1
         return command - 1
 
-
     def pdm_states_to_int(self, states):
-        assert(len(states) == 10)
+        assert (len(states) == 10)
         ret = 0
         for i in range(10):
             ret |= (states[i] << (i + 1))
         return ret
 
-
     def measure_pdms(self):
         # TODO: Use this to implement overcurrent protection simulation (when actual != expected)
         return self.expected_pdm_states
 
-
     def brownout(self):
         raise NotImplementedError
-
 
     def get_board_status(self):
         raise NotImplementedError
 
-
     def get_last_error(self):
         raise NotImplementedError
-
 
     def get_telemetry(self, command):
         raise NotImplementedError
 
-
     def manual_reset(self):
         raise NotImplementedError
-
 
     def pcm_reset(self, command):
         V_battery = command | 0x01
@@ -166,7 +153,6 @@ class EPS:
         V_33 = command | 0x04
         V_12 = command | 0x08
         raise NotImplementedError
-
 
     def get_n_pdm(self, register, command):
         pin = self.get_pin_num(command)
@@ -181,7 +167,6 @@ class EPS:
         elif register == EPSRegister.GET_PDM_N_CURRENT_TIMER_VALUE:
             return self.timer_values[pin] // 30
         raise Exception
-
 
     def ingest(self, register, command):
         # NOTE: I2C should convert byte arrays to ints and vice versa, simulator will always deal w/ ints
@@ -203,7 +188,6 @@ class EPS:
 
         self.write_register_command(register, command)
 
-
     # Just making this method for the sake of conveniance
     def get_register_read_dict(self, command):
         return {
@@ -221,11 +205,12 @@ class EPS:
             EPSRegister.GET_PDM_ALL_ACTUAL_STATE.value: lambda: self.pdm_states_to_int(self.measure_pdms()),
             EPSRegister.GET_PDM_ALL_EXPECTED_STATE.value: lambda: self.pdm_states_to_int(self.expected_pdm_states),
             EPSRegister.GET_PDM_ALL_INITIAL_STATE.value: lambda: self.pdm_states_to_int(self.initial_pdm_states),
-            EPSRegister.GET_PDM_N_ACTUAL_STATE.value: lambda: self.get_n_pdm(EPSRegister.GET_PDM_N_ACTUAL_STATE, command),
+            EPSRegister.GET_PDM_N_ACTUAL_STATE.value: lambda: self.get_n_pdm(EPSRegister.GET_PDM_N_ACTUAL_STATE,
+                                                                             command),
             EPSRegister.GET_PDM_N_TIMER_LIMIT.value: lambda: self.get_n_pdm(EPSRegister.GET_PDM_N_TIMER_LIMIT, command),
-            EPSRegister.GET_PDM_N_CURRENT_TIMER_VALUE.value: lambda: self.get_n_pdm(EPSRegister.GET_PDM_N_CURRENT_TIMER_VALUE, command),
+            EPSRegister.GET_PDM_N_CURRENT_TIMER_VALUE.value: lambda: self.get_n_pdm(
+                EPSRegister.GET_PDM_N_CURRENT_TIMER_VALUE, command),
         }
-
 
     def write_register_command(self, register, command):
         if register == EPSRegister.SET_COMMS_WATCHDOG_PERIOD.value:
@@ -234,7 +219,7 @@ class EPS:
                 return
             self.watchdog_period = command
         if register == EPSRegister.RESET_COMMS_WATCHDOG.value:
-            return # Technically does nothing
+            return  # Technically does nothing
         if register == EPSRegister.SWITCH_ON_ALL_PDMS.value:
             self.expected_pdm_states = [1 for i in range(10)]
         if register == EPSRegister.SWITCH_OFF_ALL_PDMS.value:
@@ -269,4 +254,3 @@ class EPS:
             self.pcm_reset(command)
         if register == EPSRegister.MANUAL_RESET.value:
             self.manual_reset()
-        

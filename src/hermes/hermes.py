@@ -3,6 +3,7 @@ import time
 from .modules.eps import EPS
 from threading import Thread
 
+
 class Hermes:
 
     def __init__(self, config):
@@ -18,7 +19,6 @@ class Hermes:
         if "EPS" in self.config:
             self.submodules["EPS"] = EPS(self.config, self.registry)
 
-
     def control(self):
         while True:
             if not self.registry["PI_ON"]:
@@ -32,19 +32,16 @@ class Hermes:
                 # If the submodule should be on but is currently off, restart it
                 elif self.registry[submodule + "_ON"] and not self.submodules[submodule].terminated:
                     self.reset(submodule)
-                    
 
     def turn_off(self, submodule):
         if submodule not in self.submodules:
             print("Submodule {} not found!".format(submodule))
         self.submodules[submodule].terminated = True
 
-
     def turn_on(self, submodule):
         if submodule not in self.submodules:
             print("Submodule {} not found!".format(submodule))
         self.submodules[submodule].terminated = False
-
 
     def reset(self, submodule):
         if submodule not in self.submodules:
@@ -53,7 +50,6 @@ class Hermes:
         time.sleep(self.config[submodule]["reset_time"])
         self.submodules[submodule].terminated = False
         self.submodules[submodule].reset()
-
 
     def run(self):
         for name in self.submodules:

@@ -1,5 +1,6 @@
 import json
 
+
 def read_file(filename):
     data = json.load(open(filename))
     data = {int(key): data[key] for key in data}
