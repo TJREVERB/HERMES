@@ -78,6 +78,9 @@ def ingest(hermes, mcl, inp):
 
         print(mcl.state_field_registry.hardware_faults[flag], console=True)
 
+    elif header == 'get_state':
+        print(mcl.core.mode, console=True)
+
     else:
         print("Unknown header:", header, console=True)
     
