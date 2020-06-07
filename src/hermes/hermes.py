@@ -14,7 +14,7 @@ class Hermes:
         self.registry = {
             "EPS_ON": True,
             "PI_ON": True,
-            "ADCS_ON": True,
+            "APRS_ON": True,
             "ANTENNA_DEPLOYER_ON": True,
             "IRIDIUM_ON": True
         }

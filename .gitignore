@@ -4,6 +4,7 @@
 *.serial
 *.hermes
 blackbox.txt
+config.json
 
 
 # Byte-compiled / optimized / DLL files
