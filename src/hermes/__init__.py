@@ -1,1 +1,1 @@
-from .hermes import Hermes, DataType
+from .hermes import Hermes, Generator

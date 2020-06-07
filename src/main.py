@@ -6,7 +6,7 @@ import time
 import argparse
 from threading import Thread
 
-from hermes import Hermes, DataType
+from hermes import Hermes, Generator
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -86,7 +86,7 @@ def ingest(hermes, mcl, inp):
     
 
 def run_tests(filename, hermes, mcl):
-    file = yaml.load(open(filename, 'r'))
+    file = yaml.full_load(open(filename, 'r'))
 
     run_stack = []
     for time_stamp, action in file['actions']:

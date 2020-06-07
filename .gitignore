@@ -3,7 +3,7 @@
 *.i2c
 *.serial
 *.hermes
-runstack.yaml
+src/runstack.yaml
 blackbox.txt
 config.json
 

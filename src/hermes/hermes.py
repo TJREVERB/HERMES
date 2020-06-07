@@ -1,9 +1,17 @@
 import sys
 import time
+from enum import Enum
 from threading import Thread
 
 from .modules.eps import EPS
-from .data_mode import DataType
+
+
+class Generator(Enum):
+    BOOT = "BOOT"
+    STARTUP = "STARTUP"
+    NORMAL = "NORMAL"
+    LOW_POWER = "LOW_POWER"
+    DANGER = "DANGER"
 
 
 class Hermes:
@@ -18,9 +26,9 @@ class Hermes:
             "ANTENNA_DEPLOYER_ON": True,
             "IRIDIUM_ON": True
         }
-        starting_data_type = DataType(config['starting_data_type'])
+        generator = Generator(config['generator'])
         if "EPS" in self.config:
-            self.submodules["EPS"] = EPS(self.config, self.registry, starting_data_type)
+            self.submodules["EPS"] = EPS(self.config, self.registry, generator)
 
     def control(self):
         while True:
@@ -55,7 +63,7 @@ class Hermes:
         self.submodules[submodule].terminated = False
         self.submodules[submodule].reset()
 
-    def shift_mode(self, mode: DataType):
+    def shift_mode(self, mode: Generator):
         for submodule in self.submodules:
             self.submodules[submodule].shift_mode(mode)
 
