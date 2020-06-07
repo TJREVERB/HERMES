@@ -18,13 +18,13 @@ Local simulation of REVERB's EPS, SATT-4 Radio, Iridium Radio, and Antenna Deplo
 
 ## How to run a set of tests
 
-Create `runfile.hermes`, with your test cases to run over an interval
+Create `runstack.yaml`, with your test cases to run over an interval
 
-Pass the filepath to `runfile.hermes` with `-t` or `--testfile`.
+Pass the filepath to `runstack.yaml` with `-t` or `--testfile`.
 
-Example: `python hermes.py --config config.json -t runfile.hermes`
+Example: `python main.py --config config.json -t runstack.yaml`
 
-    # Example runfile.hermes
+    # Example runstack.yaml
     runtime: 5  # in seconds
     modules:  # what modules to activate during the test period
         - APRS
@@ -41,6 +41,8 @@ Example: `python hermes.py --config config.json -t runfile.hermes`
 ## How to run interactive tests
 
 Do not use the `-t` or `--testfile` flags when running `main.py`. 
+
+`python main.py -c config.json`
 
 ---
 
