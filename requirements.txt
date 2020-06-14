@@ -1,0 +1,5 @@
+portalocker==1.7.0
+pywin32==228
+PyYAML==5.3.1
+reverb-i2c==1.1.1
+reverb-serial==1.2.3

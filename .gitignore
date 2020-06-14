@@ -6,7 +6,9 @@
 src/runstack.yaml
 blackbox.txt
 config.json
-
+config.yaml
+first_boot
+antenna_deployed
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

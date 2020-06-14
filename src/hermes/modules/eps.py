@@ -1,7 +1,17 @@
 # https://drive.google.com/drive/u/0/folders/1RtOsvaIf1FDO5OYh6ZsVETSZuCb2_O6_ page 39
 import time
+import json
 from enum import Enum
-from .helpers import read_file, write_file
+
+
+def read_file(filename):
+    data = json.load(open(filename))
+    data = {int(key): data[key] for key in data}
+    return data
+
+
+def write_file(filename, data):
+    json.dump(data, open(filename, "w+"))
 
 
 class InvalidChannelError(Exception):

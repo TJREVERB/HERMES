@@ -1,0 +1,22 @@
+# runstack.yaml
+
+# config
+runtime: 5
+generator: NORMAL
+first_boot: No
+antenna_deployed: No
+interactive: No
+
+# enable
+modules:
+    - APRS
+    - Antenna_Deployer
+    - EPS
+    - Iridium
+
+# tests (ignored if interactive is enabled)
+actions:
+    - [2, shutdown_aprs]
+commands:
+    - [4, print EPS]
+    - [1.5, sfr TIME]
