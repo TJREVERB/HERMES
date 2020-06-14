@@ -271,4 +271,6 @@ class EPS:
             self.manual_reset()
 
     def run_action(self, name):
-        pass
+        if name == 'brownout':
+            self.brownout()
+            return
