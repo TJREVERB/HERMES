@@ -1,6 +1,5 @@
 import os
 import sys
-import json
 import yaml
 import time
 import argparse
@@ -110,8 +109,13 @@ def run_tests(config, hermes, mcl):
             time_stamp, rs_type, content = run_stack.pop(0)
             if rs_type == 'command':
                 ingest(hermes, mcl, content)
+
             elif rs_type == 'action':
-                print("Running Action", content, console=True)
+                if ';' not in content:
+                    print('Module or action name not provided in:', content)
+                    continue
+
+                hermes.run_action(*content.split(';'))
 
 
 def main():
@@ -131,13 +135,12 @@ def main():
     if config['antenna_deployed']:
         open(os.path.join(os.environ["HOME"], 'antenna_deployed'), 'w')
 
-    hermes = Hermes(config)
-    hermes.run()
-
     mcl = MCL()
-    thread = Thread(target=mcl_thread, args=(mcl,))
-    thread.daemon = True
-    thread.start()
+    pfs = Thread(target=mcl_thread, args=(mcl,), daemon=True)
+    hermes = Hermes(config, mcl)
+
+    hermes.run()
+    pfs.start()
 
     if config['interactive']:
         while True:

@@ -16,7 +16,7 @@ class Generator(Enum):
 
 class Hermes:
 
-    def __init__(self, config):
+    def __init__(self, config, mcl):
         self.config = config
         self.submodules = {}
         self.registry = {
@@ -26,6 +26,7 @@ class Hermes:
             "ANTENNA_DEPLOYER_ON": True,
             "IRIDIUM_ON": True
         }
+        self.mcl = mcl
         generator = Generator(config['generator'])
         if "EPS" in self.config:
             self.submodules["EPS"] = EPS(self.config, self.registry, generator)
@@ -36,27 +37,33 @@ class Hermes:
                 # TODO: Somehow simulate a reboot (requires restarting MCL)
                 raise Exception("Pi turned off!")
                 sys.exit(0)
+
             for submodule in self.submodules:
                 # If the submodule should be off but is currently on, turn it off
                 if not self.registry[submodule + "_ON"] and not self.submodules[submodule].terminated:
-                    self.turn_off(submodule)
+                    self.terminate(submodule)
                 # If the submodule should be on but is currently off, restart it
                 elif self.registry[submodule + "_ON"] and not self.submodules[submodule].terminated:
                     self.reset(submodule)
 
-    def turn_off(self, submodule):
+    def terminate(self, submodule):
         if submodule not in self.submodules:
             print(f"Submodule {submodule} not found!")
+            return
+
         self.submodules[submodule].terminated = True
 
-    def turn_on(self, submodule):
+    def activate(self, submodule):
         if submodule not in self.submodules:
             print(f"Submodule {submodule} not found!")
+            return
+
         self.submodules[submodule].terminated = False
 
     def reset(self, submodule):
         if submodule not in self.submodules:
             print(f"Submodule {submodule} not found!")
+            return
 
         self.submodules[submodule].terminated = True
         time.sleep(self.config[submodule]["reset_time"])
@@ -66,6 +73,13 @@ class Hermes:
     def shift_mode(self, mode: Generator):
         for submodule in self.submodules:
             self.submodules[submodule].shift_mode(mode)
+
+    def run_action(self, submodule, name):
+        if submodule not in self.submodules:
+            print(f"Submodule {submodule} not found!")
+            return
+
+        self.submodules[submodule].run_action(name)
 
     def run(self):
         for name in self.submodules:

@@ -269,3 +269,6 @@ class EPS:
             self.pcm_reset(command)
         if register == EPSRegister.MANUAL_RESET.value:
             self.manual_reset()
+
+    def run_action(self, name):
+        pass

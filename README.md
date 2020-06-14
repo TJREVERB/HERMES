@@ -42,10 +42,7 @@ Commands are run through the interactive shell or runstack. They help pull out i
 ## Actions
 Actions are events which could occur during flight. Triggering an action simulates the event in orbit. Actions can be run via commands or the runstack.
 
-| Action name   |      Module      |  What it does |
-|:----------:|:-------------:|:------:|
-| brownout | EPS | Simulates a brownout event where the battery voltage drops significantly |
-
-
-
-
+| Module + Action name   |  What it does |
+|:----------:|:------:|
+| APRS;disconnect | The APRS serial port will always throw an error when used | 
+| EPS;brownout | Simulates a brownout event where the battery voltage drops significantly |
