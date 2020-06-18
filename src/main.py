@@ -79,6 +79,12 @@ def ingest(hermes, mcl, inp):
 
         print(mcl.state_field_registry.hardware_faults[flag])
 
+    elif header == 'action':
+        try:
+            hermes.run_action(*cmd[0].split(";"))
+        except Exception as e:
+            print(e)
+
     elif header == 'get_state':
         print(mcl.core.mode)
 
@@ -111,7 +117,6 @@ def run_tests(config, hermes, mcl):
     for time_stamp, command in config['commands']:
         run_stack.append((time_stamp, 'command', command))
     run_stack.sort()
-    print(config)
 
     while True:
         now = time.time() - starting_time
