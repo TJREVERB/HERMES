@@ -59,11 +59,11 @@ class EPSRegister(Enum):
 
 class EPS:
 
-    def __init__(self, config, registry, mode):
+    def __init__(self, config, registry, generator):
         # TODO: Use the actual initial states
-        self.config = config["EPS"]
+        self.config = config["modules"]["EPS"]
         self.registry = registry
-        self.mode = mode
+        self.generator = generator
         self.address = self.config["address"]
         self.state_filename = self.config["state_filename"]
         self.command_filename = self.config["command_filename"]
@@ -78,7 +78,7 @@ class EPS:
         self.terminated = False
         self.reset()
 
-    def shift_mode(self, mode):
+    def change_generator(self, generator):
         # TODO: change the data type outputed by EPS based on the mode (might not be necessary)
         pass
 

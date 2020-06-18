@@ -15,9 +15,6 @@ if not os.path.exists(os.path.join(BASE_DIR, 'root')):
     os.makedirs(os.path.join(BASE_DIR, 'root'))
 os.environ["HOME"] = os.path.join(BASE_DIR, 'root')
 
-if not os.path.exists(Serial.PROJECT_ROOT):
-    os.makedirs(Serial.PROJECT_ROOT)
-
 # Add MCL to path so that we can import it
 sys.path.append(os.path.abspath(os.path.join('../..', 'pfs')))
 console_logger = print
@@ -35,7 +32,7 @@ def log(*args, console=True, save=True):
     content = "T+{0:.2f}".format(time.time() - starting_time) + ': ' + ' '.join([str(i) for i in args]) + "\n"
 
     if save:
-        with open(os.path.join(Serial.PROJECT_ROOT, "blackbox.txt"), "a+") as file:
+        with open(os.path.join(BASE_DIR, "blackbox.txt"), "a+") as file:
             file.write(content)
 
     if console:
@@ -85,6 +82,21 @@ def ingest(hermes, mcl, inp):
     elif header == 'get_state':
         print(mcl.core.mode)
 
+    elif header == 'change_generator':
+        try:
+            generator = Generator(cmd[0])
+        except Exception as e:
+            print(e)
+            return
+        hermes.change_generator(generator)
+
+    elif header == 'send':
+        try:
+            hermes.send(*cmd)
+        except Exception as e:
+            print(e)
+            return
+
     elif header == 'quit':
         return True
 
@@ -99,6 +111,7 @@ def run_tests(config, hermes, mcl):
     for time_stamp, command in config['commands']:
         run_stack.append((time_stamp, 'command', command))
     run_stack.sort()
+    print(config)
 
     while True:
         now = time.time() - starting_time
@@ -119,7 +132,7 @@ def run_tests(config, hermes, mcl):
 
 
 def main():
-    open(os.path.join(Serial.PROJECT_ROOT, "blackbox.txt"), "w+")
+    open(os.path.join(BASE_DIR, "blackbox.txt"), "w+")
     __builtins__.__dict__['print'] = log
 
     parser = argparse.ArgumentParser()
@@ -150,10 +163,10 @@ def main():
     else:
         run_tests(config, hermes, mcl)
 
-    if not config['first_boot']:
+    if os.path.exists(os.path.join(os.environ["HOME"], 'first_boot')):
         os.remove(os.path.join(os.environ["HOME"], 'first_boot'))
 
-    if config['antenna_deployed']:
+    if os.path.exists(os.path.join(os.environ["HOME"], 'antenna_deployed')):
         os.remove(os.path.join(os.environ["HOME"], 'antenna_deployed'))
 
 

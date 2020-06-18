@@ -9,10 +9,17 @@ interactive: No
 
 # enable
 modules:
-    - APRS
-    - Antenna_Deployer
-    - EPS
-    - Iridium
+  APRS:
+    pfs_logging: True
+    start_with_error: False
+    reset_time: 0
+  Iridium: {}
+  EPS:
+    state_filename: addr.state.i2c
+    command_filename: addr.command.i2c
+    address: 4
+    reset_time: 0
+  AntennaDeployer: {}
 
 # tests (ignored if interactive is enabled)
 actions:
