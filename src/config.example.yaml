@@ -13,7 +13,10 @@ modules:
     pfs_logging: True
     start_with_error: False
     reset_time: 0
-  Iridium: {}
+  Iridium:
+    pfs_logging: True
+    start_with_error: False
+    reset_time: 0
   EPS:
     state_filename: addr.state.i2c
     command_filename: addr.command.i2c

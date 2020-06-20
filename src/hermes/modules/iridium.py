@@ -3,17 +3,17 @@ from .generator import Generator
 from time import sleep
 
 
-class APRS:
+class Iridium:
 
     def __init__(self, config, mcl, generator: Generator):
         self.config = config
         self.mcl = mcl
         self.generator = generator
 
-        self.pfs_logging = config['modules']['APRS']['pfs_logging']
-        self.pfs_error = config['modules']['APRS']['start_with_error']
+        self.pfs_logging = config['modules']['Iridium']['pfs_logging']
+        self.pfs_error = config['modules']['Iridium']['start_with_error']
 
-        self.serial = Serial(port='/dev/ttyACM0', invert=True, timeout=0.1)
+        self.serial = Serial(port='/dev/serial0', invert=True, timeout=0.1)
         self.serial.logging = True
 
         self.terminated = False
@@ -22,9 +22,9 @@ class APRS:
         sleep(0.1)
 
         while True:
-            if self.mcl.aprs.aprs.serial is not None:
-                self.mcl.aprs.aprs.serial.logging = self.pfs_logging
-                self.mcl.aprs.aprs.serial.error = self.pfs_error
+            if self.mcl.iridium.iridium.serial is not None:
+                self.mcl.iridium.iridium.serial.logging = self.pfs_logging
+                self.mcl.iridium.iridium.serial.error = self.pfs_error
 
             nb = self.serial.read(size=1)
 
@@ -36,7 +36,7 @@ class APRS:
 
     def send(self, command):
         if self.terminated:
-            print(f"APRS module isn't active, cannot send: {command}")
+            print(f"Iridium module isn't active, cannot send: {command}")
             return
 
         print(f"Sending {command}")
@@ -71,7 +71,7 @@ class APRS:
         elif name == 'disconnect':
             self.pfs_error = True
         else:
-            print(f'Unknown APRS action: {name}')
+            print(f'Unknown Iridium action: {name}')
 
     def terminate(self):
         self.terminated = True

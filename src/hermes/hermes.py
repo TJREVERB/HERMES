@@ -2,9 +2,7 @@ import sys
 import time
 from threading import Thread
 
-from .modules.eps import EPS
-from .modules.aprs import APRS
-from .modules.generator import Generator
+from .modules import APRS, EPS, Generator, Iridium
 
 
 class Hermes:
@@ -27,6 +25,9 @@ class Hermes:
 
         if "APRS" in self.config['modules']:
             self.submodules["APRS"] = APRS(self.config, mcl, generator)
+
+        if "IRIDIUM" in self.config['modules']:
+            self.submodules["IRIDIUM"] = Iridium(self.config, mcl, generator)
 
     def control(self):
         while True:
