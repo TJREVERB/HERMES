@@ -13,6 +13,8 @@ class Iridium:
         self.pfs_logging = config['modules']['Iridium']['pfs_logging']
         self.pfs_error = config['modules']['Iridium']['start_with_error']
 
+        self.stable_signal = config['modules']['Iridium']['stable_signal']
+
         self.serial = Serial(port='/dev/serial0', invert=True, timeout=0.1)
         self.serial.logging = True
 
@@ -21,12 +23,35 @@ class Iridium:
     def run(self):
         sleep(0.1)
 
+        byte_cmd = b''
         while True:
             if self.mcl.iridium.iridium.serial is not None:
                 self.mcl.iridium.iridium.serial.logging = self.pfs_logging
                 self.mcl.iridium.iridium.serial.error = self.pfs_error
 
             nb = self.serial.read(size=1)
+            byte_cmd += nb
+
+            if str(byte_cmd, 'utf-8').endswith("\n"):
+                str_cmd = str(byte_cmd, 'utf-8').strip()
+                if str_cmd == "AT+CSQ":
+                    # Test Signal values
+                    rssi = 1
+                    if self.stable_signal:
+                        rssi = 4
+
+                    self.send(f"AT+CSQ: {rssi}\n")
+
+                if str_cmd == "AT-MSGEO":
+                    # Test Location Values
+                    x = 1104
+                    y = -4848
+                    z = 3976
+                    time_stamp = 68637129
+
+                    self.send(f"AT-MSGEO: {x},{y},{z},{time_stamp}\n")
+
+                byte_cmd = b''
 
             if nb != b'' and self.generator == Generator.BOOT:
                 print("Ummmm, the SATT-4 is transmitting during the boot interval...")
@@ -55,9 +80,6 @@ class Iridium:
         self.serial.write(command.encode('utf-8'))
 
     def change_generator(self, generator: Generator):
-        if generator in [Generator.NORMAL, Generator.LOW_POWER] and self.generator == Generator.STARTUP:
-            self.serial.write(b'TJ:C;pFS;EXIT_STARTUP;;\n')
-
         if generator == Generator.DANGER:
             self.pfs_error = True
         else:
